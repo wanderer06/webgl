@@ -1,10 +1,11 @@
+// WebGL tutorials
+// mdn  https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL
+// docs http://docs.gl
+
 window.onload = start;
 var gl; // global for WebGL
 
-// see http://docs.gl
-
 function start() {
-
   var canvas = document.getElementById('glcanvas');
 
   // init gl context
@@ -25,11 +26,9 @@ function start() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   // resize the canvas?
   gl.viewport(0, 0, canvas.width, canvas.height);
-
 }
 
 function initWebGL(canvas) {
-
   gl = null;
 
   // retrieve context
@@ -40,11 +39,9 @@ function initWebGL(canvas) {
   }
 
   return gl;
-
 }
 
 function initShaders() {
-
   var fragmentShader = getShader(gl, 'shader-fs');
   var vertexShader = getShader(gl, 'shader-vs');
 
@@ -61,12 +58,43 @@ function initShaders() {
 
   vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
   gl.enableVertexAttribArray(vertexPositionAttribute);
-
 }
 
-function getShader() {
+function getShader(gl, id, type) {
+  var shaderScript, theSource;
 
+  shaderScript = document.getElementById(id);
 
+  if (!shaderScript) {
+    return null;
+  }
 
+  theSource = shaderScript.text;
+
+  if (!type) {
+    if (shaderScript.type == 'x-shader/x-fragment') {
+      type = gl.FRAGMENT_SHADER;
+    } else if (shaderScript.type == 'x-shader/x-vertex') {
+      type = gl.VERTEX_SHADER;
+    } else {
+      return null; // unknown type
+    }
+  }
+
+  shader = gl.createShader(type);
+}
+
+function createShader(shader, theSource) {
+  // compile shader
+  gl.compileShader(shader);
+
+  // check compile status
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert('Compilation failed: ' + gl.getShaderInfoLog(shader));
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
 }
 
