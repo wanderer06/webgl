@@ -26,6 +26,9 @@ function start() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   // resize the canvas?
   gl.viewport(0, 0, canvas.width, canvas.height);
+
+  var horizAspect = 480.0/640.0;
+  initShaders();
 }
 
 function initWebGL(canvas) {
@@ -61,11 +64,12 @@ function initShaders() {
 }
 
 function getShader(gl, id, type) {
-  var shaderScript, theSource;
+  var shaderScript, theSource, shader;
 
   shaderScript = document.getElementById(id);
 
   if (!shaderScript) {
+    alert('No shader script');
     return null;
   }
 
@@ -82,10 +86,9 @@ function getShader(gl, id, type) {
   }
 
   shader = gl.createShader(type);
-}
+  gl.shaderSource(shader, theSource);
 
-function createShader(shader, theSource) {
-  // compile shader
+    // compile shader program
   gl.compileShader(shader);
 
   // check compile status
@@ -95,6 +98,15 @@ function createShader(shader, theSource) {
     return null;
   }
 
+  console.log(theSource);
   return shader;
+}
+
+function initBuffers() {
+  var squareVerticesBuffer;
+
+  squareVerticesBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+
 }
 
